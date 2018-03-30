@@ -4,13 +4,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import ru.goodgame.model.DatabaseConnection;
-import ru.goodgame.model.MySQLConnection;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import ru.goodgame.model.*;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.annotation.Nonnull;
+import java.sql.SQLException;
 
 @SpringBootApplication
+@EnableScheduling
 @EnableSwagger2
 public class GameApplication {
 
@@ -18,48 +20,30 @@ public class GameApplication {
         SpringApplication.run(GameApplication.class, args);
     }
 
-    @Value("${config.path:}")
-    private String configFilePath;
+    @Value("${spring.datasource.url:}")
+    private String url;
 
-    @Value("${screen.name:}")
-    private String screenName;
+    @Value("${spring.datasource.username:}")
+    private String username;
+
+    @Value("${spring.datasource.password:}")
+    private String password;
 
     @Bean
     @Nonnull
-    public DatabaseConnection getConnection() {
-        return new MySQLConnection();
+    public DatabaseConnector getConnection() throws SQLException {
+        return MySQLConnector.getConnection(url, username, password);
     }
-    //     */
-    //     * This path is automatically read either from application.properties, or from a command line
-//    /**
 
-//    @Bean
-//    @Nonnull
-//    public AuthConfig getConfiguration() {
-//        return AuthConfig.fromFile(configFilePath, screenName);
-//    }
+    @Bean
+    @Nonnull
+    public UserRepository getUserRepo() throws SQLException {
+        return new UserRepositoryImpl(getConnection());
+    }
 
-//    @Bean
-//	@Nonnull
-//    public IUserRepository userRepository() {
-//        return new UserRepository(cassandraConnector(), getConfiguration());
-//    }
-//
-//    @Bean
-//    @Nonnull
-//    public IAgentDataRepository tokenDataRepository() {
-//        return new AgentDataRepository(cassandraConnector(), getConfiguration());
-//    }
-//
-//	@Bean
-//	@Nonnull
-//	public IAuthService agentEventsService() {
-//        return new AuthService(userRepository(), tokenDataRepository());
-//    }
-//
-//    @Bean
-//    @Nonnull
-//    public IConnectCassandra cassandraConnector() {
-//        return CassandraConnector.getConnect(getConfiguration());
-//    }
+    @Bean
+    @Nonnull
+    public SyncService getService() throws SQLException {
+        return new SyncServiceImpl(getUserRepo());
+    }
 }

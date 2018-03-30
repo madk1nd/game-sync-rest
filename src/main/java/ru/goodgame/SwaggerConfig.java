@@ -10,9 +10,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.annotation.Nonnull;
-
 import static springfox.documentation.builders.PathSelectors.regex;
+
 
 @Configuration
 @EnableSwagger2
@@ -28,7 +27,7 @@ public class SwaggerConfig {
                 .apiInfo(metaData());
     }
 
-    @Nonnull
+
     private ApiInfo metaData() {
         return new ApiInfo(
                 "Game synchronization module with REST API",
