@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <property name="LOG_PATH" value="logs" />
+    <conversionRule conversionWord="crlf"
+                    converterClass="org.owasp.security.logging.mask.CRLFConverter"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.apache" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.hibernate" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="springfox" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.datastax" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="io.netty" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="ru.goodgame" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

@@ -16,10 +16,6 @@ import java.sql.SQLException;
 @EnableSwagger2
 public class GameApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(GameApplication.class, args);
-    }
-
     @Value("${spring.datasource.url:}")
     private String url;
 
@@ -43,7 +39,17 @@ public class GameApplication {
 
     @Bean
     @Nonnull
+    public ActivityRepository getActivityRepo() throws SQLException {
+        return new ActivityRepositoryImpl(getConnection());
+    }
+
+    @Bean
+    @Nonnull
     public SyncService getService() throws SQLException {
-        return new SyncServiceImpl(getUserRepo());
+        return new SyncServiceImpl(getUserRepo(), getActivityRepo());
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(GameApplication.class, args);
     }
 }
