@@ -1,0 +1,1 @@
+sudo docker run --name mysql-with-port -P -e MYSQL_ROOT_PASSWORD=admin -d mysql:latest

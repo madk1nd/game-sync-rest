@@ -1,3 +1,15 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+*.iml
+target
+.settings
+.classpath
+.project
+.idea
+/leiame.txt
+/deploy
+*.log
+pom.xml.versionsBackup
+
 # Compiled class file
 *.class
 
