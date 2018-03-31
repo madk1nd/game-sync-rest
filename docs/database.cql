@@ -25,3 +25,12 @@ FOREIGN KEY (user_uuid) REFERENCES users(uuid)
 ) ENGINE=InnoDB;
 
 INSERT INTO `activity` (`user_uuid`,`activity`,`time`) VALUES ("hiufjhfter", 43345234, '2015-12-05 22:00:00');
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `ordered_uuid`(uuid BINARY(36))
+RETURNS binary(16) DETERMINISTIC
+RETURN UNHEX(CONCAT(SUBSTR(uuid, 15, 4),SUBSTR(uuid, 10, 4),SUBSTR(uuid, 1, 8),SUBSTR(uuid, 20, 4),SUBSTR(uuid, 25)));
+
+select hex(id),test from test where id=ordered_uuid('8e696f4f-ad30-4d87-a3bd-91c8b5b2a265');
+
+INSERT INTO test VALUES (ordered_uuid('e0fa9149-e288-4877-b1b4-22524175aabd'),'primer1');
+INSERT INTO test VALUES (ordered_uuid('8e696f4f-ad30-4d87-a3bd-91c8b5b2a265'),'primer1');
