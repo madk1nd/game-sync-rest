@@ -14,6 +14,8 @@ import ru.goodgame.model.SyncService;
 
 import javax.annotation.Nonnull;
 
+import java.util.UUID;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -27,6 +29,12 @@ public class SyncController {
     public SyncController(@Nonnull SyncService service) {
         this.service = service;
     }
+
+    // e0fa9149-e288-4877-b1b4-22524175aabd
+    // 8e696f4f-ad30-4d87-a3bd-91c8b5b2a265
+//    public static void main(String[] args) {
+//        System.out.println(UUID.randomUUID());
+//    }
 
     @Nonnull
     @ApiOperation(value = "Save user synchronization data")
