@@ -2,10 +2,13 @@ package ru.goodgame.model;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.goodgame.dto.ResponseDTO;
-import ru.goodgame.dto.Result;
 import ru.goodgame.dto.UserDTO;
 
 import javax.annotation.Nonnull;
+import java.sql.SQLException;
+
+import static ru.goodgame.dto.ResponseDTO.badResponse;
+import static ru.goodgame.dto.ResponseDTO.goodResponse;
 
 @Slf4j
 public class SyncServiceImpl implements SyncService {
@@ -22,36 +25,39 @@ public class SyncServiceImpl implements SyncService {
     @Nonnull
     @Override
     public ResponseDTO saveUserData(@Nonnull String uuid, @Nonnull UserDTO dto) {
-        if (userRepository.save(uuid, dto))
-            return new ResponseDTO(
-                    Result.OK,
-                    "Successfully saved user with id = " + uuid
-            );
-        else
-            return new ResponseDTO(
-                    Result.FAIL,
-                    "Can't save user with id = " + uuid
-            );
+        try {
+            boolean result = userRepository.syncUserData(uuid, dto);
+            return goodResponse(result ? "sync data was saved" : "sync data wasn't saved", "");
+        } catch (SQLException e) {
+            LOG.error("Can't update user data for uuid :: {}, cause :: {}", e.getMessage());
+            return badResponse(e.getMessage());
+        }
     }
 
     @Nonnull
     @Override
-    public UserDTO getUserInfo(@Nonnull String uuid) {
-        return userRepository.getUser(uuid);
+    public ResponseDTO getUserInfo(@Nonnull String uuid) {
+        try {
+            UserDTO userData = userRepository.getUserData(uuid);
+            if (userData == null) {
+                return badResponse(String.format("Can't find data for user with id = %s", uuid));
+            }
+            return goodResponse(String.format("Successfully found data for user with id = %s", uuid), userData);
+        } catch (SQLException e) {
+            return badResponse(e.getMessage());
+        }
     }
 
     @Nonnull
     @Override
     public ResponseDTO saveActivity(@Nonnull String uuid, @Nonnull Integer activity) {
-        if (activityRepository.saveActivity(uuid, activity))
-            return new ResponseDTO(
-                    Result.OK,
-                    "Successfully saved user activity for id = " + uuid
-            );
-        else
-            return new ResponseDTO(
-                    Result.FAIL,
-                    "Can't save user activity with id = " + uuid
-            );
+        try {
+            boolean result = activityRepository.saveActivity(uuid, activity);
+            return goodResponse(result ? "statistic data was saved" : "statistic data wasn't saved", "");
+        } catch (SQLException e) {
+            LOG.error("Can't save activity data :: {}, for uuid :: {} cause :: {}",
+                    activity, uuid, e.getMessage());
+            return badResponse(e.getMessage());
+        }
     }
 }

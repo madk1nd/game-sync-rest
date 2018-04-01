@@ -14,10 +14,11 @@ import ru.goodgame.model.SyncService;
 
 import javax.annotation.Nonnull;
 
-import java.util.UUID;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static ru.goodgame.utils.Constants.URL_STATISTICS;
+import static ru.goodgame.utils.Constants.URL_USER_INFO;
+import static ru.goodgame.utils.Constants.URL_USER_SYNC;
 
 @RestController
 @RequestMapping("/")
@@ -30,15 +31,9 @@ public class SyncController {
         this.service = service;
     }
 
-    // e0fa9149-e288-4877-b1b4-22524175aabd
-    // 8e696f4f-ad30-4d87-a3bd-91c8b5b2a265
-//    public static void main(String[] args) {
-//        System.out.println(UUID.randomUUID());
-//    }
-
     @Nonnull
     @ApiOperation(value = "Save user synchronization data")
-    @RequestMapping(value = "/sync", method = POST, produces = APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = URL_USER_SYNC, method = POST, produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<ResponseDTO> saveSyncData(@RequestParam("uuid") String uuid,
                                                     @RequestBody UserDTO dto) {
         return new ResponseEntity<>(service.saveUserData(uuid, dto), HttpStatus.OK);
@@ -46,16 +41,16 @@ public class SyncController {
 
     @Nonnull
     @ApiOperation(value = "Operation to get stored user data")
-    @RequestMapping(value = "/user", method = POST, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UserDTO> getUserInfo(@RequestParam("uuid") String uuid) {
+    @RequestMapping(value = URL_USER_INFO, method = POST, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ResponseDTO> getUserInfo(@RequestParam("uuid") String uuid) {
         return new ResponseEntity<>(service.getUserInfo(uuid), HttpStatus.OK);
     }
 
     @Nonnull
     @ApiOperation(value = "Save user statistics")
-    @RequestMapping(value = "/stat", method = POST, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<ResponseDTO> test(@RequestParam("activity") Integer activity,
-                                       @RequestParam("uuid") String uuid) {
+    @RequestMapping(value = URL_STATISTICS, method = POST, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ResponseDTO> saveStatistics(@RequestParam("activity") Integer activity,
+                                                      @RequestParam("uuid") String uuid) {
         return new ResponseEntity<>(service.saveActivity(uuid, activity), HttpStatus.OK);
     }
 }

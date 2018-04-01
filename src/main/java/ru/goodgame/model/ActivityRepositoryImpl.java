@@ -2,14 +2,16 @@ package ru.goodgame.model;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import ru.goodgame.query.ActivityQueryParams;
 
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 
 @Slf4j
 public class ActivityRepositoryImpl implements ActivityRepository {
+
+    @Nonnull private static final String QUERY = "INSERT INTO `activity` " +
+            "(`user_uuid`,`activity`, `time`) VALUES (ordered_uuid(?), ?, NOW());";
 
     @Nonnull private final DatabaseConnector connector;
 
@@ -18,16 +20,8 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public boolean saveActivity(@Nonnull String uuid, @Nonnull Integer activity) {
-        @Nonnull val query = "INSERT INTO `activity` " +
-                "(`user_uuid`,`activity`,`time`) VALUES (?, ?, ?);";
-        try {
-            Object[] params = new Object[] { uuid, activity, new Timestamp(new Date().getTime()) };
-            return connector.executeUpdate(query, params);
-        } catch (SQLException e) {
-            LOG.error("Exception during executing update query :: {}, cause :: {}",
-                    query, e.getMessage());
-            return false;
-        }
+    public boolean saveActivity(@Nonnull String uuid, @Nonnull Integer activity) throws SQLException {
+        @Nonnull val params = new ActivityQueryParams(uuid, activity);
+        return connector.executeUpdate(QUERY, params);
     }
 }

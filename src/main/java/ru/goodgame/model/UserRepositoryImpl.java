@@ -3,20 +3,29 @@ package ru.goodgame.model;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import ru.goodgame.dto.UserDTO;
+import ru.goodgame.query.GetUserQueryParams;
+import ru.goodgame.query.UpdateUserQueryParams;
 import ru.goodgame.utils.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.constraints.Null;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Stream;
+
+import static ru.goodgame.utils.Constants.FIELD_COUNTRY;
+import static ru.goodgame.utils.Constants.FIELD_MONEY;
 
 @Slf4j
 public class UserRepositoryImpl implements UserRepository {
+
+    @Nonnull private static final String GET_USER_DATA_QUERY = "SELECT " +
+            "`money`,`country` " +
+            "FROM users WHERE `uuid`=ordered_uuid(?) ;";
+
+    @Nonnull private static final String SAVE_USER_DATA_QUERY = "UPDATE `users` " +
+            "SET `money` = ?, `country` = ?, `time` = NOW() " +
+            "WHERE uuid = ordered_uuid(?);";
 
     @Nonnull private final DatabaseConnector connector;
 
@@ -25,43 +34,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean save(@Nonnull String uuid, @Nonnull UserDTO dto) {
-        @Nonnull val query = "INSERT INTO `users` " +
-                "(`uuid`,`money`,`country`,`registration_time`) " +
-                "VALUES (?, ?, ?, ?);";
-        try {
-            Object[] params = new Object[] { uuid, dto.getMoney(), dto.getCountry(), new Timestamp(new Date().getTime()) };
-            return connector.executeUpdate(query, params);
-        } catch (SQLException e) {
-            LOG.error("Exception during executing update query :: {}, cause :: {}",
-                    query, e.getMessage());
-            return false;
-        }
+    public boolean syncUserData(@Nonnull String uuid, @Nonnull UserDTO dto) throws SQLException {
+        @Nonnull val params = new UpdateUserQueryParams(uuid, dto.getMoney(), dto.getCountry());
+        return connector.executeUpdate(SAVE_USER_DATA_QUERY, params);
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public UserDTO getUser(@Nonnull String uuid) {
-        @Nonnull val query = "SELECT " +
-                "`money`,`country` " +
-                "FROM users WHERE `uuid`=? ;";
-        ResultSet resultSet;
-        try {
-            Object[] params = new Object[] { uuid };
-            resultSet = connector.executeQuery(query, params);
+    public UserDTO getUserData(@Nonnull String uuid) throws SQLException {
+        @Nonnull val params = new GetUserQueryParams(uuid);
+        @Nonnull ResultSet resultSet = connector.executeQuery(GET_USER_DATA_QUERY, params);
 
-            if (resultSet.next()) {
-                String country = resultSet.getString(Constants.FIELD_COUNTRY);
-                int money = resultSet.getInt(Constants.FIELD_MONEY);
-                return new UserDTO(country, money);
-            } else {
-                LOG.error("Can't find user with id = {}", uuid);
-                return UserDTO.empty();
-            }
-        } catch (SQLException e) {
-            LOG.error("Exception during executing update query :: {}, cause :: {}",
-                    query, e.getMessage());
-            return UserDTO.empty();
+        if (resultSet.next()) {
+            @Nonnull val country = resultSet.getString(FIELD_COUNTRY);
+            int money = resultSet.getInt(FIELD_MONEY);
+            return new UserDTO(country, money);
+        } else {
+            return null;
         }
     }
 }

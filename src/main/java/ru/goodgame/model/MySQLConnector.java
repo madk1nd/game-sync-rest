@@ -2,6 +2,7 @@ package ru.goodgame.model;
 
 
 import lombok.val;
+import ru.goodgame.query.QueryParamsBinder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,29 +29,17 @@ public class MySQLConnector implements DatabaseConnector {
 
     @Override
     @Nonnull
-    public ResultSet executeQuery(@Nonnull String query, @Nonnull Object... params) throws SQLException {
-        @Nonnull PreparedStatement preparedStatement = bindParams(query, params);
+    public ResultSet executeQuery(@Nonnull String query, @Nonnull QueryParamsBinder binder) throws SQLException {
+        @Nonnull PreparedStatement preparedStatement = getStatement(query);
+        binder.bindParams(preparedStatement);
         return preparedStatement.executeQuery();
     }
 
     @Override
-    public boolean executeUpdate(@Nonnull String query, @Nonnull Object... params) throws SQLException {
-        @Nonnull PreparedStatement preparedStatement = bindParams(query, params);
-        return preparedStatement.executeUpdate() > 0;
-    }
-
-    @Nonnull
-    private PreparedStatement bindParams(@Nonnull String query, @Nonnull Object... params) throws SQLException {
+    public boolean executeUpdate(@Nonnull String query, @Nonnull QueryParamsBinder binder) throws SQLException {
         @Nonnull PreparedStatement preparedStatement = getStatement(query);
-
-        int count = 1;
-        for (Object obj : params) {
-            if (obj instanceof Integer) preparedStatement.setInt(count++, (Integer) obj);
-            if (obj instanceof String) preparedStatement.setString(count++, (String) obj);
-            if (obj instanceof Timestamp) preparedStatement.setTimestamp(count++, (Timestamp) obj);
-        }
-
-        return preparedStatement;
+        binder.bindParams(preparedStatement);
+        return preparedStatement.executeUpdate() > 0;
     }
 
     @Nonnull
