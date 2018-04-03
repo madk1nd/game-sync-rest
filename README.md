@@ -7,6 +7,6 @@ This repository is simple rest endpoint for game synchronization process
 1. Clone or download project to your local machine
 2. Run `mvn clean install` 
 3. Go to `docs/build` folder
-4. Run `docker-compose -f game-sync.yml up`
+4. Run `docker-compose -f game-sync.yml up --build`
 5. Open link in browser `http://localhost:40000/swagger-ui.html`
 
