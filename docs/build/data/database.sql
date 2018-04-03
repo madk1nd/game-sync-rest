@@ -1,5 +1,3 @@
-CREATE DATABASE game;
-
 USE game;
 
 CREATE DEFINER=`root`@`localhost` FUNCTION `ordered_uuid`(uuid BINARY(36))
