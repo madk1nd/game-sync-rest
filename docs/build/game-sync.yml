@@ -9,8 +9,8 @@ services:
     volumes:
       - "./data:/docker-entrypoint-initdb.d/"
     environment:
-      - "MYSQL_ROOT_PASSWORD:admin"
-      - "MYSQL_DATABASE:game"
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=game
   web:
     build: .
     ports:

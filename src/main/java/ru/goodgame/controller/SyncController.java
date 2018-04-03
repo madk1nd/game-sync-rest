@@ -14,6 +14,11 @@ import ru.goodgame.model.SyncService;
 
 import javax.annotation.Nonnull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static ru.goodgame.utils.Constants.URL_STATISTICS;
@@ -31,6 +36,25 @@ public class SyncController {
         this.service = service;
     }
 
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("RU");
+        list.add("UK");
+        list.add("UA");
+        list.add("BL");
+        list.add("GE");
+        list.add("FR");
+        list.add("KZ");
+        list.add("UZ");
+        list.add("JA");
+        list.add("US");
+        list.add("SP");
+        list.add("IZ");
+        list.add("AR");
+        for (int i = 0; i < 100; i++) {
+            System.out.println(list.get((int) (Math.random() * list.size())));
+        }
+    }
     @Nonnull
     @ApiOperation(value = "Save user synchronization data")
     @RequestMapping(value = URL_USER_SYNC, method = POST, produces = APPLICATION_JSON_UTF8_VALUE)
