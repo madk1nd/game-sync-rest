@@ -8,6 +8,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    links:
+     - db
   db:
       image: mysql:latest
       restart: always
@@ -20,7 +22,7 @@ services:
         - MYSQL_DATABASE=game
       healthcheck:
         test: mysqladmin -uroot -padmin ping
-        interval: 2s
+        interval: 1s
         timeout: 5s
         retries: 30
   

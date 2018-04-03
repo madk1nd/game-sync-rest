@@ -11,6 +11,10 @@ country CHAR(2) NOT NULL,
 time TIMESTAMP
 ) ENGINE=InnoDB;
 
+CREATE INDEX money ON users (money);
+CREATE INDEX time ON users (time);
+CREATE INDEX country ON users (country);
+
 INSERT INTO `users` (`uuid`,`money`,`country`,`time`) VALUES (ordered_uuid('77023fa1-bc2b-439a-a28f-25d77934a8ea'), 10031, 'JA', NOW());
 INSERT INTO `users` (`uuid`,`money`,`country`,`time`) VALUES (ordered_uuid('45a671bb-4e73-470c-906c-8e24f4404528'), 778510, 'FR', NOW());
 INSERT INTO `users` (`uuid`,`money`,`country`,`time`) VALUES (ordered_uuid('95d5d0bc-cefb-4643-bbeb-4323e4dc201b'), 491360, 'JA', NOW());
