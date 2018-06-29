@@ -16,3 +16,4 @@ TestPipline {
 			sh "docker-compose -f game-sync.yml up --build"
 		}
 	}
+}
