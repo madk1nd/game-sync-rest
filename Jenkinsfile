@@ -2,7 +2,7 @@ node {
 	def app
 
 	stage('pull') {
-		sh "pwd; ls; git checkout master; git pull"
+		sh "cd game-sync-rest; git init; git checkout master; git pull"
 	}
 	
 	stage('build'){
