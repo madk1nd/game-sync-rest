@@ -2,7 +2,7 @@ node {
 	def app
 
 	stage('pull') {
-		sh "git checkout master; git pull"
+		sh "pwd; git checkout master; git pull"
 	}
 	
 	stage('build'){
