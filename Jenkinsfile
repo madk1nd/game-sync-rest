@@ -2,7 +2,7 @@ node {
 	def app
 
 	stage('pull') {
-		sh "git clone https://github.com/madk1nd/game-sync-rest.git; git checkout master; git pull"
+		sh "git clone https://github.com/madk1nd/game-sync-rest.git; pwd; ls; git checkout master; git pull"
 	}
 	
 	stage('build'){
