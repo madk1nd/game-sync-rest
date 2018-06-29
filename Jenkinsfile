@@ -6,6 +6,6 @@ node {
 	}
 	
 	stage('build'){
-		sh "mvn clean install; cd docs/build; docker-compose -f game-sync.yml up --build"
+		sh "cd game-sync-rest; mvn clean install; cd docs/build; docker-compose -f game-sync.yml up --build"
 	}
 }
