@@ -1,4 +1,4 @@
-TestPipline {
+node {
 	def app
 
 	stage('pull') {
